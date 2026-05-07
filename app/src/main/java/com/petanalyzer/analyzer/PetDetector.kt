@@ -17,6 +17,7 @@ class PetDetector(context: Context) {
 
     private val detector: ObjectDetector
     private val moodClassifier: PetMoodClassifier
+    private val poseDetector: PetPoseDetector
     private val frameHistory = mutableListOf<FrameData>()
     private val maxHistorySize = 30
 
@@ -44,12 +45,13 @@ class PetDetector(context: Context) {
 
     companion object {
         private const val CONFIDENCE_THRESHOLD = 0.35f
-        private const val ASPECT_STANDING = 1.25f       // 高/宽 > 1.25 → 站立
-        private const val ASPECT_LYING = 0.75f           // 高/宽 < 0.75 → 躺下
-        private const val MOVEMENT_SLEEP = 1.2f          // 平均位移 < 1.2px → 静止
-        private const val MOVEMENT_WALK = 5f             // 平均位移 > 5px → 行走
-        private const val MOVEMENT_RUN = 14f             // 平均位移 > 14px → 奔跑
-        private const val AREA_APPROACH_RATIO = 1.25f    // 面积增长 > 1.25x → 靠近
+        // 注意：这些阈值现在主要用于快速判断，详细姿态分析由 PetPoseDetector 处理
+        private const val ASPECT_STANDING = 1.35f       // 高/宽 > 1.35 → 站立倾向
+        private const val ASPECT_LYING = 0.7f           // 高/宽 < 0.7 → 躺下倾向
+        private const val MOVEMENT_SLEEP = 1.2f         // 平均位移 < 1.2px → 静止
+        private const val MOVEMENT_WALK = 5f            // 平均位移 > 5px → 行走
+        private const val MOVEMENT_RUN = 14f            // 平均位移 > 14px → 奔跑
+        private const val AREA_APPROACH_RATIO = 1.25f   // 面积增长 > 1.25x → 靠近
     }
 
     init {
@@ -59,6 +61,7 @@ class PetDetector(context: Context) {
             .build()
         detector = ObjectDetector.createFromFileAndOptions(context, "efficientdet_lite0.tflite", options)
         moodClassifier = PetMoodClassifier(context)
+        poseDetector = PetPoseDetector()
     }
 
     // 快照回调：当检测到可爱行为时触发
@@ -299,17 +302,20 @@ class PetDetector(context: Context) {
             }
         }
 
-        // 3. 计算近期平均宽高比
+        // 3. 使用增强的姿态检测器分析静止姿态
+        val recentBoxes = recent.map { it.smoothedBox }
         val recentAspectRatios = recent.map { it.aspectRatio }
-        val avgAspectRatio = recentAspectRatios.average().toFloat()
+        val currentBox = frameHistory.last().smoothedBox
+        val currentAspectRatio = frameHistory.last().aspectRatio
 
-        // 宽高比的稳定性（标准差小 = 姿态稳定）
-        val aspectMean = avgAspectRatio
-        val aspectVariance = if (recentAspectRatios.size > 1) {
-            recentAspectRatios.map { (it - aspectMean) * (it - aspectMean) }.average().toFloat()
-        } else 0f
+        val poseAnalysis = poseDetector.analyzeEnhancedPosture(
+            currentBox = currentBox,
+            aspectRatio = currentAspectRatio,
+            recentBoxes = recentBoxes,
+            recentAspectRatios = recentAspectRatios
+        )
 
-        // 4. 分类逻辑
+        // 4. 分类逻辑（优先判断动态行为，静止时使用姿态分析）
         val candidate = when {
             // 睡觉：整个历史窗口（30帧 ≈ 3秒）位移极小
             frameHistory.size >= maxHistorySize && isSleeping() ->
@@ -335,21 +341,17 @@ class PetDetector(context: Context) {
             avgMovement > 2.5f && directionChanges >= 2 ->
                 PetBehaviorType.PLAYING
 
-            // 静止状态：根据宽高比区分站/坐/躺
-            avgMovement <= MOVEMENT_SLEEP && aspectVariance < 0.15f -> {
-                when {
-                    avgAspectRatio > ASPECT_STANDING -> PetBehaviorType.STANDING
-                    avgAspectRatio < ASPECT_LYING -> PetBehaviorType.LYING_DOWN
-                    else -> PetBehaviorType.SITTING
-                }
+            // 静止状态：使用增强的姿态分析（基于多帧宽高比趋势）
+            avgMovement <= MOVEMENT_SLEEP && poseAnalysis.aspectStability > 0.6f -> {
+                poseAnalysis.posture
             }
 
-            // 微动状态 → 可能是看着你或在做小动作
+            // 微动状态 → 使用姿态分析，但置信度要求更高
             avgMovement <= 3f && avgMovement > MOVEMENT_SLEEP -> {
-                when {
-                    avgAspectRatio > ASPECT_STANDING -> PetBehaviorType.STANDING
-                    avgAspectRatio < ASPECT_LYING -> PetBehaviorType.LYING_DOWN
-                    else -> PetBehaviorType.LOOKING
+                if (poseAnalysis.confidence > 0.7f) {
+                    poseAnalysis.posture
+                } else {
+                    PetBehaviorType.LOOKING
                 }
             }
 
@@ -379,15 +381,28 @@ class PetDetector(context: Context) {
 
         behaviorConfidence--
         if (behaviorConfidence <= 0) {
-            behaviorConfidence = 1
-            // 对于静止姿态（站/坐/躺），切换更谨慎
+            // 对于静止姿态（站/坐/躺），切换需要更多确认帧
             val stillPoses = setOf(PetBehaviorType.SITTING, PetBehaviorType.STANDING, PetBehaviorType.LYING_DOWN)
+
             if (candidate in stillPoses && currentBehavior in stillPoses) {
-                // 静止姿态间切换需要 2 帧确认
-                behaviorConfidence = -1
-                return currentBehavior
+                // 静止姿态间切换需要 4 帧确认（更谨慎）
+                if (behaviorConfidence <= -3) {
+                    behaviorConfidence = 1
+                    currentBehavior = candidate
+                }
+            } else if (candidate in stillPoses || currentBehavior in stillPoses) {
+                // 动态 ↔ 静止切换需要 3 帧确认
+                if (behaviorConfidence <= -2) {
+                    behaviorConfidence = 1
+                    currentBehavior = candidate
+                }
+            } else {
+                // 动态行为间切换只需 2 帧确认
+                if (behaviorConfidence <= -1) {
+                    behaviorConfidence = 1
+                    currentBehavior = candidate
+                }
             }
-            currentBehavior = candidate
         }
         return currentBehavior
     }
