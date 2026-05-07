@@ -1,0 +1,46 @@
+[
+    {
+        "merged": "com.petanalyzer.app-debug-61:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.petanalyzer.app-main-63:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.petanalyzer.app-debug-61:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.petanalyzer.app-main-63:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.petanalyzer.app-debug-61:/drawable_cute_bg.xml.flat",
+        "source": "com.petanalyzer.app-main-63:/drawable/cute_bg.xml"
+    },
+    {
+        "merged": "com.petanalyzer.app-debug-61:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.petanalyzer.app-main-63:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.petanalyzer.app-debug-61:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.petanalyzer.app-main-63:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.petanalyzer.app-debug-61:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.petanalyzer.app-main-63:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.petanalyzer.app-debug-61:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.petanalyzer.app-main-63:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.petanalyzer.app-debug-61:/drawable-nodpi_ic_foreground.png.flat",
+        "source": "com.petanalyzer.app-main-63:/drawable-nodpi/ic_foreground.png"
+    },
+    {
+        "merged": "com.petanalyzer.app-debug-61:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.petanalyzer.app-main-63:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.petanalyzer.app-debug-61:/xml_file_paths.xml.flat",
+        "source": "com.petanalyzer.app-main-63:/xml/file_paths.xml"
+    },
+    {
+        "merged": "com.petanalyzer.app-debug-61:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.petanalyzer.app-main-63:/mipmap-mdpi/ic_launcher.png"
+    }
+]

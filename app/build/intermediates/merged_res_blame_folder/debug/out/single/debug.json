@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.petanalyzer.app-merged_res-63:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.petanalyzer.app-main-65:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.petanalyzer.app-merged_res-63:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.petanalyzer.app-main-65:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.petanalyzer.app-merged_res-63:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.petanalyzer.app-main-65:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.petanalyzer.app-merged_res-63:/drawable_cute_bg.xml.flat",
+        "source": "com.petanalyzer.app-main-65:/drawable/cute_bg.xml"
+    }
+]

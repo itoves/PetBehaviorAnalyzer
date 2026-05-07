@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- 左耳 -->
+    <path
+        android:fillColor="#FF1A1A1A"
+        android:pathData="M28,36C16,28 12,50 24,58C26,60 32,54 32,46C32,40 30,36 28,36Z" />
+
+    <!-- 右耳 -->
+    <path
+        android:fillColor="#FF1A1A1A"
+        android:pathData="M80,36C92,28 96,50 84,58C82,60 76,54 76,46C76,40 78,36 80,36Z" />
+
+    <!-- 头部 -->
+    <path
+        android:fillColor="#FF1A1A1A"
+        android:pathData="M54,26C68,26 80,36 80,52C80,68 68,78 54,78C40,78 28,68 28,52C28,36 40,26 54,26Z" />
+
+    <!-- 左眼白 -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M41,48m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0" />
+
+    <!-- 右眼白 -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M67,48m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0" />
+
+    <!-- 左瞳孔 -->
+    <path
+        android:fillColor="#FF1A1A1A"
+        android:pathData="M42,48m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0" />
+
+    <!-- 右瞳孔 -->
+    <path
+        android:fillColor="#FF1A1A1A"
+        android:pathData="M68,48m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0" />
+
+    <!-- 左眼高光 -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M39,46m-1.5,0a1.5,1.5 0,1 1,3 0a1.5,1.5 0,1 1,-3 0" />
+
+    <!-- 右眼高光 -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M65,46m-1.5,0a1.5,1.5 0,1 1,3 0a1.5,1.5 0,1 1,-3 0" />
+
+    <!-- 鼻子 -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M49,60 L59,60 L54,64 Z" />
+
+    <!-- 嘴巴线 -->
+    <path
+        android:strokeColor="#FF000000"
+        android:strokeWidth="1.5"
+        android:pathData="M54,64 L54,66" />
+
+    <!-- 舌头 -->
+    <path
+        android:fillColor="#FFFF5C8A"
+        android:pathData="M47,65C47,63 61,63 61,65C61,78 47,78 47,65Z" />
+
+    <!-- 舌头中线 -->
+    <path
+        android:strokeColor="#FFE04575"
+        android:strokeWidth="1"
+        android:pathData="M54,65 L54,76" />
+
+</vector>

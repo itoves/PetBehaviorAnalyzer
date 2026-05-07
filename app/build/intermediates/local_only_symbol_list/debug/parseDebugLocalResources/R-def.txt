@@ -1,0 +1,21 @@
+R_DEF: Internal format may change without notice
+local
+color cream
+color ic_launcher_background
+color lavender
+color mint_green
+color pink_dark
+color pink_light
+color sky_blue
+color text_primary
+color text_secondary
+color warm_yellow
+color white
+drawable cute_bg
+drawable ic_foreground
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+mipmap ic_launcher
+string app_name
+style Theme.PetAnalyzer
+xml file_paths
